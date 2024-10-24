@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attractive To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #FF5733, #FFBD33, #DBFF33, #75FF33, #33FF57, #33FFBD, #33DBFF, #3375FF, #3358FF, #5733FF, #BD33FF, #FF33DB, #FF3375); /* Rainbow gradient background */
+            background-size: 400% 400%; /* For smooth animation */
+            animation: gradient 10s ease infinite; /* Smooth transition animation */
+            color: #333;
+            padding: 20px;
+            position: relative; /* Position for the welcome text */
+            height: 100vh; /* Full height for vertical centering */
+            overflow: hidden; /* Prevents scrollbars */
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .welcome-text {
+            position: absolute; /* Absolute position for centering */
+            top: 50%; /* Position it at the middle */
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center the text */
+            font-size: 2.5em; /* Font size for the welcome text */
+            color: white; /* Text color */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Shadow for better readability */
+            z-index: 2; /* Ensure it stays above the background */
+        }
+
+        .container {
+            margin: 0 auto; /* Center container */
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            backdrop-filter: blur(10px); /* Blurring effect */
+            position: relative; /* Positioning for inner content */
+            z-index: 1; /* Make sure the container is above the background */
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            width: calc(100% - 22px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border: 1px solid #28a745; /* Green border on focus */
+            outline: none; /* Remove outline */
+        }
+
+        button {
+            padding: 10px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #28a745; /* Green background */
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s; /* Added transform for scale effect */
+        }
+
+        button:hover {
+            background-color: #218838; /* Darker green on hover */
+            transform: scale(1.05); /* Scale effect on hover */
+        }
+
+        #taskList {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        #taskList li {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 1;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9; /* Light background for tasks */
+            border-radius: 4px;
+        }
+
+        #taskList li.completed {
+            background-color: #d4edda; /* Light green background for completed tasks */
+            text-decoration: line-through;
+            opacity: 0.5; /* Fade effect for completed tasks */
+        }
+
+        #taskList li button {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s; /* Smooth background transition */
+        }
+
+        #taskList li button:hover {
+            background: darkred; /* Darker red on hover */
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s forwards; /* Animation for fading in */
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s forwards; /* Animation for fading out */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px); /* Slide in from above */
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px); /* Slide out to above */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-text">Welcome to Your To-Do List!</div>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <input type="text" id="task" placeholder="Add a new task">
+        <button id="addTask">Add Task</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        document.getElementById('addTask').addEventListener('click', function() {
+            const taskInput = document.getElementById('task');
+            const taskText = taskInput.value;
+
+            if (taskText === '') {
+                alert('Please enter a task!');
+                return;
+            }
+
+            const li = document.createElement('li');
+            li.textContent = taskText;
+            li.classList.add('fade-in'); // Add fade-in class
+
+            const completeButton = document.createElement('button');
+            completeButton.textContent = 'Complete';
+            completeButton.addEventListener('click', function() {
+                li.classList.toggle('completed');
+                completeButton.textContent = li.classList.contains('completed') ? 'Undo' : 'Complete';
+            });
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', function() {
+                li.classList.add('fade-out'); // Add fade-out class
+                li.addEventListener('animationend', function() {
+                    li.remove(); // Remove the element after fade-out animation
+                });
+            });
+
+            li.appendChild(completeButton);
+            li.appendChild(deleteButton);
+            document.getElementById('taskList').appendChild(li);
+            taskInput.value = ''; // Clear input field
+        });
+    </script>
+</body>
+</html>
